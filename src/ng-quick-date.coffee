@@ -149,8 +149,8 @@ app.directive "quickDatepicker", ['ngQuickDateDefaults', '$filter', '$sce', (ngQ
             d.setHours(time[0] || 0)
             d.setMinutes(time[1] || 0)
             d.setSeconds(time[2] || 0)
-          selected = ngModelCtrl.$modelValue && d && datesAreEqual(d, ngModelCtrl.$modelValue)
-          today = datesAreEqual(d, new Date())
+          selected = ngModelCtrl.$modelValue && d && datesAreEqual && datesAreEqual(d, ngModelCtrl.$modelValue)
+          today = if datesAreEqual then datesAreEqual(d, new Date())
           weeks[row].push({
             date: d
             selected: selected
@@ -221,7 +221,7 @@ app.directive "quickDatepicker", ['ngQuickDateDefaults', '$filter', '$sce', (ngQ
 
     # DATA WATCHES
     # ==================================
-    
+
     # Called when the model is updated from outside the datepicker
     ngModelCtrl.$render = ->
       setCalendarDate(ngModelCtrl.$viewValue)
@@ -275,9 +275,10 @@ app.directive "quickDatepicker", ['ngQuickDateDefaults', '$filter', '$sce', (ngQ
           if !tmpDateAndTime
             throw 'Invalid Time'
           tmpDate = tmpDateAndTime
-        unless datesAreEqualToMinute(ngModelCtrl.$viewValue, tmpDate)
-          if !scope.selectDate(tmpDate, false)
-            throw 'Invalid Date'
+        if datesAreEqualToMinute
+          unless datesAreEqualToMinute(ngModelCtrl.$viewValue, tmpDate)
+            if !scope.selectDate(tmpDate, false)
+              throw 'Invalid Date'
 
         if closeCalendar
           scope.toggleCalendar(false)
@@ -347,7 +348,7 @@ app.directive "quickDatepicker", ['ngQuickDateDefaults', '$filter', '$sce', (ngQ
                   </thead>
                   <tbody>
                     <tr ng-repeat='week in weeks'>
-                      <td ng-mousedown='selectDate(day.date, true, true)' ng-click='$event.preventDefault()' ng-class='{"other-month": day.other, "disabled-date": day.disabled, "selected": day.selected, "is-today": day.today}' ng-repeat='day in week'>{{day.date | date:'d'}}</td>
+                      <td ng-click='selectDate(day.date, true, true); $event.preventDefault()' ng-class='{"other-month": day.other, "disabled-date": day.disabled, "selected": day.selected, "is-today": day.today}' ng-repeat='day in week'>{{day.date | date:'d'}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -357,6 +358,9 @@ app.directive "quickDatepicker", ['ngQuickDateDefaults', '$filter', '$sce', (ngQ
               </div>
             </div>
             """
+            ###
+            <td ng-mousedown='selectDate(day.date, true, true)' ng-click='$event.preventDefault()' ng-class='{"other-month": day.other, "disabled-date": day.disabled, "selected": day.selected, "is-today": day.today}' ng-repeat='day in week'>{{day.date | date:'d'}}</td>
+            ###
 ]
 
 app.directive 'ngEnter', ->
