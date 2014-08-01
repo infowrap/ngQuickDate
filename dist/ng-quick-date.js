@@ -212,7 +212,7 @@
             } else {
               d1 = stringToDate(d1);
               d2 = stringToDate(d2);
-              return d1 && d2 && (d1.getYear() === d2.getYear()) && (d1.getMonth() === d2.getMonth()) && (d1.getDate() === d2.getDate());
+              return d1 && d2 && (typeof d1 === "object" && typeof d2 === "object") && (d1.getYear() === d2.getYear()) && (d1.getMonth() === d2.getMonth()) && (d1.getDate() === d2.getDate());
             }
           };
           datesAreEqualToMinute = function(d1, d2) {
